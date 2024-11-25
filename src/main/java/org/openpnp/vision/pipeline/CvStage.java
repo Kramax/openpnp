@@ -14,6 +14,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.LinkedList;
 
 import org.opencv.core.Mat;
 import org.openpnp.model.Area;
@@ -320,7 +321,25 @@ public abstract class CvStage {
         @SuppressWarnings("unchecked")
         public <T> List<T> getExpectedListModel(Class<T> expectedElementClass, Exception emptyException) throws Exception {
             @SuppressWarnings("rawtypes")
-            List list = getExpectedModel(List.class);
+            List list = null;
+            try {
+                list = getExpectedModel(List.class);
+            }
+            catch(Exception e) {
+                // see if it is a single element of the type and turn it into a list of 1 if it is
+                T single_object = null;
+                if (model == null) {
+                    throw e;
+                }
+                if (expectedElementClass.isInstance(model)) {
+                    single_object = (T)model;
+                }
+                if (single_object == null) {
+                    throw e;
+                }
+                list = new LinkedList<T>();
+                list.add(single_object);
+            }
             if (list.size() == 0) {
                 if (emptyException != null) {
                     throw emptyException;

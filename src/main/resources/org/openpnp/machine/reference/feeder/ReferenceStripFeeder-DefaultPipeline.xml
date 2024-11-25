@@ -1,15 +1,13 @@
 <cv-pipeline>
    <stages>
-      <cv-stage class="org.openpnp.vision.pipeline.stages.ImageCapture" name="original" enabled="true" settle-first="true"/>
-      <cv-stage class="org.openpnp.vision.pipeline.stages.BlurMedian" name="cleanup-original" enabled="true" kernel-size="5"/>
-      <cv-stage class="org.openpnp.vision.pipeline.stages.ConvertColor" name="gray" enabled="true" conversion="Bgr2Gray"/>
-      <cv-stage class="org.openpnp.vision.pipeline.stages.DetectEdgesCanny" name="find-edges" enabled="true" threshold-1="5.0" threshold-2="15.0"/>
-      <cv-stage class="org.openpnp.vision.pipeline.stages.BlurGaussian" name="predetect-1" enabled="true" kernel-size="5"/>
-      <cv-stage class="org.openpnp.vision.pipeline.stages.BlurMedian" name="predetect-2" enabled="false" kernel-size="7"/>
-      <cv-stage class="org.openpnp.vision.pipeline.stages.DetectFixedCirclesHough" name="results" enabled="true" dp="1.0" param-1="25.0" param-2="20.0"/>
-      <cv-stage class="org.openpnp.vision.pipeline.stages.ImageRecall" name="recalled" enabled="true" image-stage-name="original"/>
+      <cv-stage class="org.openpnp.vision.pipeline.stages.ImageCapture" name="original" enabled="true" default-light="true" settle-option="Settle" count="1"/>
+      <cv-stage class="org.openpnp.vision.pipeline.stages.ImageWriteDebug" name="deb0" enabled="false" prefix="strip_" suffix=".png"/>
+      <cv-stage class="org.openpnp.vision.pipeline.stages.BlurGaussian" name="predetect-1" enabled="false" kernel-size="5" property-name="BlurGaussian"/>
+      <cv-stage class="org.openpnp.vision.pipeline.stages.DetectCircularSymmetry" name="results" enabled="true" min-diameter="10" max-diameter="100" max-distance="100" search-width="0" search-height="0" max-target-count="20" min-symmetry="1.2" corr-symmetry="0.25" outer-margin="0.3" inner-margin="0.1" sub-sampling="8" super-sampling="2" symmetry-score="RingMedianVarianceVsRingVarianceSum" property-name="sprocketHole" diagnostics="false" heat-map="false"/>
+      <cv-stage class="org.openpnp.vision.pipeline.stages.ImageRecall" name="recalled" enabled="false" image-stage-name="original"/>
       <cv-stage class="org.openpnp.vision.pipeline.stages.DrawCircles" name="display" enabled="true" circles-stage-name="results" thickness="1">
          <color r="255" g="0" b="0" a="255"/>
       </cv-stage>
+      <cv-stage class="org.openpnp.vision.pipeline.stages.ImageWriteDebug" name="deb1" enabled="true" prefix="strip_result_" suffix=".png"/>
    </stages>
 </cv-pipeline>
